@@ -1,0 +1,47 @@
+name: Deploy Pages
+
+on:
+  push:
+    branches: [main, beta]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: _site
+      - uses: actions/checkout@v4
+        with:
+          ref: beta
+          path: _beta
+        continue-on-error: true
+      - name: Assemble site
+        run: |
+          rm -rf _site/.git _site/.github _site/cloudflare
+          if [ -d _beta ]; then
+            rm -rf _beta/.git _beta/.github _beta/cloudflare
+            mkdir -p _site/beta
+            cp -r _beta/. _site/beta/
+            sed -i 's|<meta name="theme-color"|<meta name="robots" content="noindex, nofollow">\n  &|' _site/beta/index.html
+          fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

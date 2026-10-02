@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>z3n1337</title>
+  <meta name="description" content="z3n — software engineering student, chronically monster-pilled. nya/meow :3">
+  <link rel="canonical" href="https://z3n1337.dev/">
+  <meta name="theme-color" content="#1e1e2e">
+  <meta name="color-scheme" content="dark">
+  <!-- link preview (Telegram, Discord, social networks) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="z3n">
+  <meta property="og:description" content="software engineering student · chronically monster-pilled · nya/meow :3">
+  <meta property="og:url" content="https://z3n1337.dev/">
+  <meta property="og:image" content="https://z3n1337.dev/img/og-square.jpg">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:image" content="https://z3n1337.dev/img/og-square.jpg">
+  <!-- who this page is about, for search engines -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "z3n",
+    "alternateName": ["z3n1337", "z3n_ghoul"],
+    "url": "https://z3n1337.dev/",
+    "image": "https://z3n1337.dev/img/og-square.jpg",
+    "description": "Software engineering student",
+    "sameAs": [
+      "https://x.com/z3n_ghoul",
+      "https://t.me/z3n_ghoul",
+      "https://github.com/z3nghoul",
+      "https://steamcommunity.com/profiles/76561198985617990"
+    ]
+  }
+  </script>
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="icon" href="img/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&family=Pangolin&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- loading screen, removed by js/loader.js -->
+  <div id="loader" aria-hidden="true">
+    <div class="lb">
+      <div class="lb-glow"></div>
+      <div class="lb-core"></div>
+      <div class="lb-side lb-left"><div class="lb-head"></div><div class="lb-sparks"></div></div>
+      <div class="lb-side lb-right"><div class="lb-head"></div><div class="lb-sparks"></div></div>
+    </div>
+  </div>
+  <!-- sky background -->
+  <canvas id="bg"></canvas>
+  <div id="page-overlay"></div>
+
+  <main class="page">
+    <div class="glass">
+
+      <div class="about">
+      <div class="name-wrap">
+      <!-- cat ears and whiskers over the nickname, js/ears.js makes them wobble -->
+      <svg class="ears" viewBox="0 0 120 84" aria-hidden="true"><defs><filter id="ears-boil" filterUnits="userSpaceOnUse" x="-45" y="-9" width="210" height="110"><feTurbulence type="turbulence" baseFrequency="0.066" numOctaves="1" seed="1" result="n"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="2.1" xChannelSelector="R" yChannelSelector="G"/></filter></defs><g filter="url(#ears-boil)"><g transform="translate(0 9)"><path d="M6 46 C 6 30, 8 16, 13 5 C 21 11, 29 20, 35 32"/><path d="M13 33 C 14 25, 16 19, 18 15"/><path d="M114 46 C 114 30, 112 16, 107 5 C 99 11, 91 20, 85 32"/><path d="M107 33 C 106 25, 104 19, 102 15"/></g><path d="M-3 66 L-19 60 M-3 72 L-21 72 M-3 78 L-19 84"/><path d="M123 66 L139 60 M123 72 L141 72 M123 78 L139 84"/></g></svg>
+      <p class="name">z3n <span class="name-alt">\ elf</span><span class="splash" id="splash"></span></p>
+        <!-- hint "click me", shown next to the splash text -->
+        <span class="egg-hint" id="egg-hint" aria-hidden="true"><svg viewBox="0 0 95 42"><defs><path id="hint-arc" d="M19 11 Q 55 -2 93 9"/><filter id="hint-boil" filterUnits="userSpaceOnUse" x="-9" y="-9" width="113" height="63"><feTurbulence type="turbulence" baseFrequency="0.066" numOctaves="1" seed="1" result="n"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="2.1" xChannelSelector="R" yChannelSelector="G"/></filter></defs><g filter="url(#hint-boil)"><text><textPath href="#hint-arc">click me :3</textPath></text><path class="hint-line" pathLength="100" d="M19 11 Q 55 -2 93 9" transform="translate(0 4)" stroke-dasharray="82 200"/><path class="hint-line" pathLength="100" d="M19 11 Q 55 -2 93 9" transform="translate(0 7.5)" stroke-dasharray="54 200" stroke-dashoffset="-15"/><path class="hint-line" pathLength="1" d="M12 13 C 5 17, 1.5 26, 5.5 36"/><path class="hint-line" pathLength="1" d="M5.5 36 L7 30.5 M5.5 36 L1 32.5"/></g></svg></span>
+      </div>
+      <p class="bio">software engineering student<br>chronically monster-pilled<br>nya/meow :3</p>
+      </div>
+
+      <!-- links. --c is the colour of the link (r,g,b), used for the flame and the highlight -->
+      <div class="links">
+
+        <a class="link-item" href="https://x.com/z3n_ghoul" target="_blank" rel="noopener" style="--c:166,173,200">
+          <div class="link-icon">
+            <i aria-hidden="true" class="ico ico-x"></i>
+          </div>
+          <div class="link-info">
+            <span class="link-label">X</span>
+            <span class="link-handle">@z3n_ghoul</span>
+          </div>
+        </a>
+
+        <a class="link-item" href="https://t.me/z3n_ghoul" target="_blank" rel="noopener" style="--c:116,199,236">
+          <div class="link-icon">
+            <i aria-hidden="true" class="ico ico-telegram"></i>
+          </div>
+          <div class="link-info">
+            <span class="link-label">Telegram</span>
+            <span class="link-handle">@z3n_ghoul</span>
+          </div>
+        </a>
+
+        <div class="link-item" role="button" tabindex="0" data-copy="z3n_ghoul" style="--c:180,190,254">
+          <div class="link-icon">
+            <i aria-hidden="true" class="ico ico-discord"></i>
+          </div>
+          <div class="link-info">
+            <span class="link-label">Discord</span>
+            <span class="link-handle">@z3n_ghoul</span>
+          </div>
+        </div>
+
+        <a class="link-item" href="https://github.com/z3nghoul" target="_blank" rel="noopener" style="--c:203,166,247">
+          <div class="link-icon">
+            <i aria-hidden="true" class="ico ico-github"></i>
+          </div>
+          <div class="link-info">
+            <span class="link-label">GitHub</span>
+            <span class="link-handle">@z3nghoul</span>
+          </div>
+        </a>
+
+        <a class="link-item" href="https://steamcommunity.com/profiles/76561198985617990" target="_blank" rel="noopener" id="steam-link" style="--c:137,180,250">
+          <div class="link-icon">
+            <i aria-hidden="true" class="ico ico-steam"></i>
+          </div>
+          <div class="link-info">
+            <span class="link-title">
+              <span class="link-label">Steam</span>
+              <span class="steam-status" id="steam-status" data-status="...">
+                <span class="steam-dot" id="steam-dot"></span>
+                <span class="sr-only" id="steam-state"></span>
+              </span>
+            </span>
+            <span class="link-handle" id="steam-handle">···</span>
+          </div>
+        </a>
+
+        <!-- address and mailto are filled in by js/mail.js, so the e-mail is not in the page source -->
+        <div class="link-item" id="mail-row" role="button" tabindex="0" style="--c:243,139,168">
+          <div class="link-icon">
+            <i aria-hidden="true" class="ico ico-google"></i>
+          </div>
+          <div class="link-info">
+            <span class="link-label">EMail</span>
+            <span class="link-handle"></span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- now playing from Last.fm (js/player.js) -->
+    <aside class="player" id="player" aria-label="now playing">
+      <div class="player-frame">
+        <div class="player-inner">
+          <a class="player-art-link" id="player-link" target="_blank" rel="noopener" hidden>
+            <canvas class="player-art" id="player-art" width="24" height="24" aria-hidden="true"></canvas>
+          </a>
+          <div class="player-body" id="player-body">
+            <div class="player-meta" aria-live="polite">
+              <span class="player-title" id="player-title"></span>
+              <span class="player-artist" id="player-artist"></span>
+            </div>
+            <div class="player-progress" id="player-progress" role="slider" tabindex="0" aria-label="preview position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+            <div class="player-controls">
+              <button type="button" class="player-btn" id="player-play" aria-label="play preview">
+                <i aria-hidden="true" class="ico ico-play" id="player-play-icon"></i>
+              </button>
+              <div class="player-volume">
+                <button type="button" class="player-btn" id="player-vol-btn" aria-label="mute">
+                  <i aria-hidden="true" class="ico ico-volume" id="player-vol-icon"></i>
+                </button>
+                <div class="pix-slider" id="player-slider" role="slider" tabindex="0" aria-label="volume" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30"></div>
+              </div>
+            </div>
+          </div>
+          <div class="player-silence" id="player-silence">there is silence in my head</div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- footer -->
+  <footer class="footer">
+    <span class="footer-item"><span>© <span id="footer-year"></span> z3n</span></span>
+    <span class="footer-item"><span>made with <i class="footer-heart" aria-label="love"></i> and too many monsters</span></span>
+    <span class="footer-item trail"><span>somewhere in ukraine</span></span>
+  </footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
