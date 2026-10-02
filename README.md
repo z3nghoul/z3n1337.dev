@@ -26,8 +26,8 @@ Plain HTML, CSS and JavaScript, no frameworks and no build step. Open `index.htm
 
 <table>
   <tr>
-    <td width="68%"><img src=".github/assets/preview-desktop.jpg" alt="desktop"></td>
-    <td width="32%"><img src=".github/assets/preview-mobile.jpg" alt="phone"></td>
+    <td width="68%"><img src=".github/assets/preview-desktop.webp" alt="desktop"></td>
+    <td width="32%"><img src=".github/assets/preview-mobile.webp" alt="phone"></td>
   </tr>
   <tr>
     <td align="center"><sub>desktop</sub></td>
