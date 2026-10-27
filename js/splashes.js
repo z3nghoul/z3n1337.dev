@@ -36,7 +36,6 @@ const SPLASHES = [
   "catboy / vibes",
   "now with 20% more nya",
   "certified catboy moment",
-  "my pronouns are nya/meow",
   "actual femboy detected",
   "caffeine speedrun any%",
   "i have a type: fictional",
