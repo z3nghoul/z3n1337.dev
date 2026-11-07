@@ -77,7 +77,9 @@ const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 const SEGS = 16;
 const COARSE = window.matchMedia('(pointer: coarse)');
 // bigger hitbox for fingers
-const starR = () => (COARSE.matches ? 32 : 16);
+const starR = () => (COARSE.matches ? 32 : 20);
+// the star is 25% slower with a mouse. Accelerations scale by its square, so the path stays the same
+const PC_SLOW = 0.75;
 let sky = null, skyCtx = null, skyImg = null, skyW = 0, skyH = 0, skyRaf = 0;
 const stars = [];
 let starTimer = 0, starFirst = 0;
@@ -222,12 +224,13 @@ function spawnStar(now = performance.now()) {
   const still = prefersReducedMotion.matches;
   const dir = Math.random() < 0.5 ? -1 : 1;
   const bend = Math.random() < 0.5 ? -1 : 1;
+  const k = COARSE.matches ? 1 : PC_SLOW;
   stars.push({
     x0: dir < 0 ? skyW * (0.5 + Math.random() * 0.45) : skyW * (0.05 + Math.random() * 0.45),
     y0: still ? skyH * (0.15 + Math.random() * 0.4) : -8,
 
-    vx: still ? 0 : dir * Math.min(60, skyW * 0.2), vy: still ? 0 : skyH / (COARSE.matches ? 4.5 : 2.5),
-    ax: still ? 0 : bend * Math.min(14, skyW * 0.06), ay: still ? 0 : 3,
+    vx: still ? 0 : dir * Math.min(60, skyW * 0.2) * k, vy: still ? 0 : skyH / (COARSE.matches ? 4.5 : 2.5) * k,
+    ax: still ? 0 : bend * Math.min(14, skyW * 0.06) * k * k, ay: still ? 0 : 3 * k * k,
     t0: now, scale: 0.7, caught: 0,
   });
 }
