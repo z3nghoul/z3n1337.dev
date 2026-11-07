@@ -22,8 +22,7 @@ const SPLASHES = [
   "keep your friends close",
   "don't make a girl a promise",
   "remember, no russian",
-  "follow the damn train cj",
-  "wasted",
+  "lie or die",
   "what is a man? a miserable little pile of secrets",
   "perfectly balanced as all things should be",
   "respawn in 3... 2... 1...",
@@ -36,7 +35,6 @@ const SPLASHES = [
   "catboy / vibes",
   "now with 20% more nya",
   "certified catboy moment",
-  "my pronouns are nya/meow",
   "actual femboy detected",
   "caffeine speedrun any%",
   "i have a type: fictional",
@@ -132,6 +130,13 @@ export function applyRandomTitle() {
 const BASE_FONT = 17;
 const EGG_SCALE = 1.2;
 
+// desktop, like Minecraft: the longer the splash, the smaller its font, even when there is room.
+// Minecraft uses size ~ 1 / (width + pad), which makes long splashes tiny; the square root (MC_SOFT)
+// keeps the longest riddle readable. Splashes up to MC_REF px wide (at 17px) keep the full size
+const MC_REF = 220;
+const MC_PAD = 40;
+const MC_SOFT = 0.5;
+
 // on phones the splash may wrap to two lines, on desktop it stays on one line and shrinks
 const PHONE = window.matchMedia('(max-width: 600px)');
 let el = null, fit = () => {}, regular = '';
@@ -154,7 +159,7 @@ export function initSplash() {
       window.dispatchEvent(new Event('splash:fit'));
       return;
     }
-    // desktop: shrink the font until the text fits on one line
+    // desktop: one line, the font shrinks with the length (see MC_*) and to fit the free space
     const room = (window.innerWidth - (nr.right + 10) - 16) / z;
 
     el.style.maxWidth = 'none';
@@ -163,7 +168,9 @@ export function initSplash() {
     const base = BASE_FONT * k;
     el.style.fontSize = `${base}px`;
     const w = el.scrollWidth * 0.97;
-    const fs = Math.min(base, Math.max(8, base * room / w));
+    const mc = base * Math.min(1, ((MC_REF + MC_PAD) / (w / k + MC_PAD)) ** MC_SOFT);
+    // and it still has to fit in the free space
+    const fs = Math.min(mc, Math.max(8, base * room / w));
     el.style.fontSize = `${fs.toFixed(1)}px`;
     window.dispatchEvent(new Event('splash:fit'));
   };

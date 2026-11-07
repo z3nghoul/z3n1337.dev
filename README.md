@@ -66,7 +66,8 @@ Plain HTML, CSS and JavaScript, no frameworks and no build step. Open `index.htm
 ├── js/
 │   ├── main.js              # entry point, imports every module
 │   ├── bg.js                # WebGL sky
-│   ├── bg-orbs.js           # fallback sky without WebGL
+│   ├── bg-sky2d.js          # Canvas 2D copy of the sky for browsers without WebGL
+│   ├── sky-config.js        # palette, pixel size, stars, moon, meteors (shared by both)
 │   ├── flames.js            # pixel halos around the links
 │   ├── player.js            # Last.fm "now playing" player
 │   ├── player-glow.js       # glow around the player

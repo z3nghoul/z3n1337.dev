@@ -1,40 +1,25 @@
 import { prefersReducedMotion } from './config.js';
 import { debugToggle } from './debug.js';
 import { progress, ready } from './loader.js';
+import {
+  PALETTE, PIXEL_SIZE, DARKEN, COLOR_STEPS, STAR_COUNT, STAR_LIFE, STAR_SCALE,
+  MOON_R, SHOOT_LIFE, SHOOT_BEND, SHOOT_SCALE,
+} from './sky-config.js';
 
 // night sky drawn by a WebGL fragment shader on a small canvas, scaled up so it looks like pixel art.
-// If WebGL is not available, bg-orbs.js draws simple moving blobs instead
-const PALETTE = [
-  '#5b4a8a',
-  '#8b6bc0',
-  '#cba6f7',
-  '#8a95dc',
-  '#6a5aa8',
-  '#a98bd9',
-  '#7287c8',
-  '#6a4fa3',
-];
+// If WebGL is not available, bg-sky2d.js draws a lighter Canvas 2D copy of the same sky instead.
+// Shared settings (palette, pixel size, stars, moon, meteors) live in sky-config.js
 
-// size of one art pixel on screen (smaller on phones). SUB is how many canvas pixels make one art pixel
-const PIXEL_SIZE = window.matchMedia('(max-width: 600px)').matches ? 3 : 5;
-const DARKEN = 0.6;
-const STAR_COUNT = 24;
-const STAR_LIFE = 1.4;
-// sizes and lifetimes (in seconds) of the stars, shooting stars, trails and ripples
-const MOON_R = 9;
-const SHOOT_LIFE = 1.6;
-const SHOOTS = 10;
+// SUB is how many canvas pixels make one art pixel
 const SUB = 4;
+// how many shooting stars, ripples and trail points, and their lifetimes in seconds
+const SHOOTS = 10;
 const RIPPLES = 8;
 const TRAIL = 24;
 const TRAIL_LIFE = 2.2;
 const RIPPLE_LIFE = 5;
 // period of the noise texture, tiles seamlessly
 const NOISE_P = 16;
-const COLOR_STEPS = 9;
-const STAR_SCALE = 1.04;
-const SHOOT_BEND = 0.35;
-const SHOOT_SCALE = 0.77;
 
 const VERT = `
 attribute vec2 a_pos;
@@ -763,7 +748,7 @@ function initWebGL() {
     return true;
   };
 
-  // WebGL died (context lost etc.): fall back to the 2D orbs
+  // shader failed to build: swap in a fresh canvas and fall back to the 2D sky
   const fail = () => {
     cancelAnimationFrame(raf);
     raf = -1;
@@ -771,7 +756,7 @@ function initWebGL() {
     const fresh = canvas.cloneNode(false);
     fresh.className = '';
     canvas.replaceWith(fresh);
-    import('./bg-orbs.js');
+    import('./bg-sky2d.js');
   };
 
   const resize = () => {
@@ -912,7 +897,7 @@ try {
   initWebGL();
   canvas.classList.add('gl');
 } catch (err) {
-  console.warn('[bg] WebGL unavailable, using 2D orbs:', err.message);
+  console.warn('[bg] WebGL unavailable, using 2D sky:', err.message);
   ready('bg');
-  import('./bg-orbs.js');
+  import('./bg-sky2d.js');
 }

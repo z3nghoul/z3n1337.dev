@@ -28,17 +28,41 @@ let activeKey = null;
 let revertTimer = 0;
 let used = false;
 let busy = false;
+let noEggs = false;
 
 const setEgg = (key, on) => window.dispatchEvent(new CustomEvent('egg:set', { detail: { key, on } }));
+
+// The arrow tip goes to a point picked in the splash's own rotated frame: HINT_ALONG of the way along
+// the text and HINT_GAP px above its top edge. So the gap is the same for short and long splashes
+// (the bounding box of rotated text grows taller with its length and can't be used for this).
+const HINT_ALONG = 0.45;
+const HINT_GAP = 7;
+// arrow tip inside .egg-hint, it is also its transform-origin in style.css
+const HINT_TIP_X = 7, HINT_TIP_Y = 45;
+
+// screen position of local point (x, y) of the splash, with all its transforms and zoom applied
+function splashPoint(s, x, y) {
+  const p = document.createElement('i');
+  p.style.cssText = `position:absolute;left:${x}px;top:${y}px;width:0;height:0`;
+  s.append(p);
+  const r = p.getBoundingClientRect();
+  p.remove();
+  return [r.left, r.top];
+}
 
 function placeHint() {
   const s = splashEl();
   if (!hint || !s || hint.hidden) return;
   const box = hint.offsetParent.getBoundingClientRect();
-  const r = s.getBoundingClientRect();
   const z = hint.offsetParent.currentCSSZoom || 1;
-  hint.style.left = `${(r.left - box.left + r.width * 0.42) / z - 2.4}px`;
-  hint.style.top = `${(r.top - box.top) / z - 35}px`;
+  // the pulse animation scales the splash around its bottom-left corner: undo it, so the hint does not
+  // depend on the moment it was placed
+  const k = parseFloat(getComputedStyle(s).scale) || 1;
+  const [ox, oy] = splashPoint(s, 0, s.offsetHeight);
+  const [px, py] = splashPoint(s, s.offsetWidth * HINT_ALONG, -HINT_GAP);
+  const x = ox + (px - ox) / k, y = oy + (py - oy) / k;
+  hint.style.left = `${(x - box.left) / z - HINT_TIP_X}px`;
+  hint.style.top = `${(y - box.top) / z - HINT_TIP_Y}px`;
 }
 
 const noise = hint?.querySelector('feTurbulence');
@@ -75,8 +99,10 @@ const ART = window.matchMedia('(max-width: 600px)').matches ? 3 : 5;
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 const SEGS = 16;
 const COARSE = window.matchMedia('(pointer: coarse)');
-// bigger hitbox for fingers
-const starR = () => (COARSE.matches ? 32 : 16);
+// catch radius around the star head, in screen px (same for mouse and fingers)
+const STAR_R = 32;
+// the star is 25% slower with a mouse. Accelerations scale by its square, so the path stays the same
+const PC_SLOW = 0.75;
 let sky = null, skyCtx = null, skyImg = null, skyW = 0, skyH = 0, skyRaf = 0;
 const stars = [];
 let starTimer = 0, starFirst = 0;
@@ -221,12 +247,13 @@ function spawnStar(now = performance.now()) {
   const still = prefersReducedMotion.matches;
   const dir = Math.random() < 0.5 ? -1 : 1;
   const bend = Math.random() < 0.5 ? -1 : 1;
+  const k = COARSE.matches ? 1 : PC_SLOW;
   stars.push({
     x0: dir < 0 ? skyW * (0.5 + Math.random() * 0.45) : skyW * (0.05 + Math.random() * 0.45),
     y0: still ? skyH * (0.15 + Math.random() * 0.4) : -8,
 
-    vx: still ? 0 : dir * Math.min(60, skyW * 0.2), vy: still ? 0 : skyH / (COARSE.matches ? 4.5 : 2.5),
-    ax: still ? 0 : bend * Math.min(14, skyW * 0.06), ay: still ? 0 : 3,
+    vx: still ? 0 : dir * Math.min(60, skyW * 0.2) * k, vy: still ? 0 : skyH / (COARSE.matches ? 4.5 : 2.5) * k,
+    ax: still ? 0 : bend * Math.min(14, skyW * 0.06) * k * k, ay: still ? 0 : 3 * k * k,
     t0: now, scale: 0.7, caught: 0,
   });
 }
@@ -264,7 +291,7 @@ function starAt(x, y) {
   for (const st of stars) {
     if (st.caught) continue;
     const [hx, hy] = starPos(st, (now - st.t0) / 1000);
-    if (hy * ART < skyH * ART && Math.hypot(x - hx * ART, y - hy * ART) < starR()) return st;
+    if (hy * ART < skyH * ART && Math.hypot(x - hx * ART, y - hy * ART) < STAR_R) return st;
   }
   return null;
 }
@@ -402,7 +429,7 @@ async function swapSplash(text, egg) {
 
 // show the riddle and start listening for its solution
 export async function offerEgg(key) {
-  if (!EGGS[key]) return;
+  if (noEggs || !EGGS[key]) return;
   clearTimeout(revertTimer);
   stopActions();
   offered = key;
@@ -442,7 +469,7 @@ export function withdrawEgg() {
 
 // one riddle per visit, picked at random
 function click() {
-  if (used || busy || offered) return;
+  if (noEggs || used || busy || offered) return;
   used = true;
   dismissHint();
   spendSplash();
@@ -468,3 +495,18 @@ window.addEventListener('egg:set', e => {
 for (const [key, { label }] of Object.entries(EGGS)) {
   debugToggle(`offer-${key}`, `riddle: ${label}`, false, on => (on ? offerEgg(key) : withdrawEgg()), 'offer');
 }
+
+// without WebGL the 2D sky (bg-sky2d.js) can't show the effects: no eggs at all,
+// the splash is plain text and the hint turns red and says why
+function disableEggs() {
+  if (noEggs) return;
+  withdrawEgg();
+  stopActions();
+  noEggs = true;
+  spendSplash();
+  hint?.classList.add('no-webgl');
+  const label = hint?.querySelector('textPath');
+  if (label) label.textContent = 'no webgl :(';
+}
+if (document.documentElement.classList.contains('no-webgl')) disableEggs();
+window.addEventListener('bg:no-webgl', disableEggs);
