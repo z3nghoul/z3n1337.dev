@@ -28,6 +28,7 @@ let activeKey = null;
 let revertTimer = 0;
 let used = false;
 let busy = false;
+let noEggs = false;
 
 const setEgg = (key, on) => window.dispatchEvent(new CustomEvent('egg:set', { detail: { key, on } }));
 
@@ -402,7 +403,7 @@ async function swapSplash(text, egg) {
 
 // show the riddle and start listening for its solution
 export async function offerEgg(key) {
-  if (!EGGS[key]) return;
+  if (noEggs || !EGGS[key]) return;
   clearTimeout(revertTimer);
   stopActions();
   offered = key;
@@ -442,7 +443,7 @@ export function withdrawEgg() {
 
 // one riddle per visit, picked at random
 function click() {
-  if (used || busy || offered) return;
+  if (noEggs || used || busy || offered) return;
   used = true;
   dismissHint();
   spendSplash();
@@ -468,3 +469,18 @@ window.addEventListener('egg:set', e => {
 for (const [key, { label }] of Object.entries(EGGS)) {
   debugToggle(`offer-${key}`, `riddle: ${label}`, false, on => (on ? offerEgg(key) : withdrawEgg()), 'offer');
 }
+
+// without WebGL the 2D sky (bg-sky2d.js) can't show the effects: no eggs at all,
+// the splash is plain text and the hint turns red and says why
+function disableEggs() {
+  if (noEggs) return;
+  withdrawEgg();
+  stopActions();
+  noEggs = true;
+  spendSplash();
+  hint?.classList.add('no-webgl');
+  const label = hint?.querySelector('textPath');
+  if (label) label.textContent = 'no webgl :(';
+}
+if (document.documentElement.classList.contains('no-webgl')) disableEggs();
+window.addEventListener('bg:no-webgl', disableEggs);

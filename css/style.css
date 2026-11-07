@@ -198,17 +198,15 @@ body {
   pointer-events: none;
 }
 
-/* the sky canvas (see js/bg.js) */
+/* the sky canvas: WebGL (.gl, js/bg.js) or the Canvas 2D fallback (.sky2d, js/bg-sky2d.js) */
 canvas#bg {
   position: fixed;
   inset: 0;
   width: 100%;
   height: 100%;
-  filter: blur(40px) saturate(1.6);
   z-index: 0;
 
-  &.gl {
-    filter: none;
+  &.gl, &.sky2d {
     opacity: 0;
     transition: opacity 1.2s var(--ease);
     &.ready { opacity: 1; }
@@ -321,6 +319,11 @@ canvas#bg {
   color: #e3bff5;
 
   &[hidden] { display: none; }
+  /* no WebGL: no eggs, the hint says so in red (see disableEggs in eggs.js) */
+  &.no-webgl {
+    color: #ff4d5e;
+    & svg { opacity: 1; }
+  }
 
   & svg {
     display: block;
