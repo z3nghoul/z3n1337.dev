@@ -32,14 +32,37 @@ let noEggs = false;
 
 const setEgg = (key, on) => window.dispatchEvent(new CustomEvent('egg:set', { detail: { key, on } }));
 
+// The arrow tip goes to a point picked in the splash's own rotated frame: HINT_ALONG of the way along
+// the text and HINT_GAP px above its top edge. So the gap is the same for short and long splashes
+// (the bounding box of rotated text grows taller with its length and can't be used for this).
+const HINT_ALONG = 0.45;
+const HINT_GAP = 7;
+// arrow tip inside .egg-hint, it is also its transform-origin in style.css
+const HINT_TIP_X = 7, HINT_TIP_Y = 45;
+
+// screen position of local point (x, y) of the splash, with all its transforms and zoom applied
+function splashPoint(s, x, y) {
+  const p = document.createElement('i');
+  p.style.cssText = `position:absolute;left:${x}px;top:${y}px;width:0;height:0`;
+  s.append(p);
+  const r = p.getBoundingClientRect();
+  p.remove();
+  return [r.left, r.top];
+}
+
 function placeHint() {
   const s = splashEl();
   if (!hint || !s || hint.hidden) return;
   const box = hint.offsetParent.getBoundingClientRect();
-  const r = s.getBoundingClientRect();
   const z = hint.offsetParent.currentCSSZoom || 1;
-  hint.style.left = `${(r.left - box.left + r.width * 0.42) / z - 2.4}px`;
-  hint.style.top = `${(r.top - box.top) / z - 35}px`;
+  // the pulse animation scales the splash around its bottom-left corner: undo it, so the hint does not
+  // depend on the moment it was placed
+  const k = parseFloat(getComputedStyle(s).scale) || 1;
+  const [ox, oy] = splashPoint(s, 0, s.offsetHeight);
+  const [px, py] = splashPoint(s, s.offsetWidth * HINT_ALONG, -HINT_GAP);
+  const x = ox + (px - ox) / k, y = oy + (py - oy) / k;
+  hint.style.left = `${(x - box.left) / z - HINT_TIP_X}px`;
+  hint.style.top = `${(y - box.top) / z - HINT_TIP_Y}px`;
 }
 
 const noise = hint?.querySelector('feTurbulence');
