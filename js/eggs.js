@@ -76,8 +76,8 @@ const ART = window.matchMedia('(max-width: 600px)').matches ? 3 : 5;
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 const SEGS = 16;
 const COARSE = window.matchMedia('(pointer: coarse)');
-// bigger hitbox for fingers
-const starR = () => (COARSE.matches ? 32 : 20);
+// catch radius around the star head, in screen px (same for mouse and fingers)
+const STAR_R = 32;
 // the star is 25% slower with a mouse. Accelerations scale by its square, so the path stays the same
 const PC_SLOW = 0.75;
 let sky = null, skyCtx = null, skyImg = null, skyW = 0, skyH = 0, skyRaf = 0;
@@ -268,7 +268,7 @@ function starAt(x, y) {
   for (const st of stars) {
     if (st.caught) continue;
     const [hx, hy] = starPos(st, (now - st.t0) / 1000);
-    if (hy * ART < skyH * ART && Math.hypot(x - hx * ART, y - hy * ART) < starR()) return st;
+    if (hy * ART < skyH * ART && Math.hypot(x - hx * ART, y - hy * ART) < STAR_R) return st;
   }
   return null;
 }
