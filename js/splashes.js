@@ -50,7 +50,7 @@ const SPLASHES = [
   "404: sleep not found",
   "will sleep when i'm dead",
   "running on fumes and spite",
-  "5am is just early morning right",
+  "6am is just early morning right",
   "went to bed yesterday (this week)",
   "sleep schedule: nonexistent",
   "i'll fix it tomorrow (i won't)",
